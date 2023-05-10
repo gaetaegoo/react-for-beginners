@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Movie from "../components/Movie";
+import styles from "./Home.module.css";
 
 const Home = () => {
     const [loading, setLoading] = useState(true);
@@ -48,16 +49,19 @@ const Home = () => {
 
     // map으로 array속 각각의 내용마다 뽑아오기(화면에 뿌리기)
     return (
-        <div>
+        <div className={styles.container}>
             {loading ? (
-                <h1>loading..</h1>
+                <div className={styles.loader}>
+                    <h1>Loading..</h1>
+                </div>
             ) : (
-                <div>
+                <div className={styles.movies}>
                     {/* map을 쓰려면 key가 계속 필요 */}
                     {movies.map((movie) => (
                         <Movie
                             key={movie.id}
                             id={movie.id}
+                            year={movie.year}
                             coverImg={movie.medium_cover_image}
                             title={movie.title}
                             summary={movie.summary}
