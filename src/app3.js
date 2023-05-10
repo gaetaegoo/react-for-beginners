@@ -1,54 +1,55 @@
-import Button from "./Button";
-import styles from "./App.module.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function App() {
-    const [counter, setCounter] = useState(0);
+    const [toDo, setToDo] = useState("");
 
-    const [keyword, setKeyword] = useState("");
+    const [toDos, setToDos] = useState([]);
 
-    const onClick = () => setCounter((prev) => prev + 1);
+    const onChange = (event) => setToDo(event.target.value);
 
-    const onChange = (event) => setKeyword(event.target.value);
+    const onSubmit = (event) => {
+        event.preventDefault();
+        // input이 비었을 경우, 그냥 함수 종료
+        if (toDo === "") {
+            return;
+        }
 
-    // 항상 실행
-    console.log("I run all the time.");
+        // 기존 array에 새로운 toDo를 받아서 추가
+        setToDos((currentToDos) => [...currentToDos, toDo]);
 
-    // 한 번만 실행
-    useEffect(() => {
-        console.log("I run only once.");
-    }, []);
+        // input안에 value 지우기
+        setToDo("");
+    };
 
-    // keyword 변화 시에 실행
-    useEffect(() => {
-        console.log("I run when 'keyword' changes.", keyword);
-    }, [keyword]);
-
-    // counter 변화 시에 실행
-    useEffect(() => {
-        console.log("I run when 'counter' changes.", counter);
-    }, [counter]);
-
-    // keyword 및 counter 변화 시에 실행
-    useEffect(() => {
-        console.log(
-            "I run when 'keyword & counter' changes.",
-            keyword,
-            counter
-        );
-    }, [keyword, counter]);
+    // localStorage를 쓰지 않으므로, 부모 요소를 찾아 remove
+    const deleteBtn = (event) => {
+        const li = event.target.parentElement;
+        li.remove();
+    };
 
     return (
         <div>
-            <input
-                value={keyword}
-                onChange={onChange}
-                type="text"
-                placeholder="Search here..."
-            />
-            <h1 className={styles.title}>{counter}</h1>
-            <button onClick={onClick}>Click me</button>
-            <Button text={"Continue"} />
+            <h1>My To Dos ({toDos.length})</h1>
+            <form onSubmit={onSubmit}>
+                <input
+                    onChange={onChange}
+                    value={toDo}
+                    type="text"
+                    placeholder="Write your to do.."
+                ></input>
+                <button>Add To Do</button>
+            </form>
+            <hr />
+            <ul>
+                {/* array에 있는 item들을 원하는 형태로 바꿔줌 -> 새로운 array로 return*/}
+                {/* 첫 번째 인자 - value / 두 번째 인자 - index */}
+                {toDos.map((toDo, index) => (
+                    <li key={index}>
+                        {toDo}
+                        <button onClick={deleteBtn}>❌</button>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
